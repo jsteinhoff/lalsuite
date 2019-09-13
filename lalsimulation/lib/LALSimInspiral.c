@@ -7031,11 +7031,6 @@ int XLALSimInspiralApproximantAcceptTestGRParams(Approximant approx){
     case SEOBNRv2_ROM_DoubleSpin:
     case SEOBNRv2_ROM_DoubleSpin_HI:
     case Lackey_Tidal_2013_SEOBNRv2_ROM:
-    case SEOBNRv4HM_ROM:
-    case SEOBNRv4_ROM_NRTidal:
-    case SEOBNRv4_ROM_NRTidalv2:
-    case SEOBNRv4_ROM_NRTidalv2_NSBH:
-    case SEOBNRv4T_surrogate:
     case TEOBResumS:
     case IMRPhenomA:
     case IMRPhenomB:
@@ -7075,6 +7070,11 @@ int XLALSimInspiralApproximantAcceptTestGRParams(Approximant approx){
     case PhenSpinTaylorRD:
     case EccentricTD:
     case SEOBNRv4_ROM:
+    case SEOBNRv4HM_ROM:
+    case SEOBNRv4_ROM_NRTidal:
+    case SEOBNRv4_ROM_NRTidalv2:
+    case SEOBNRv4_ROM_NRTidalv2_NSBH:
+    case SEOBNRv4T_surrogate:
     case IMRPhenomC:
     case IMRPhenomD:
     case IMRPhenomP:
