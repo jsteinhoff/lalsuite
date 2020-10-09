@@ -397,17 +397,19 @@ static REAL8 XLALSimIMRTEOBkleff (
 )
 {
     /* Function only valid for l=2 or l=3 and for m=l */
-    REAL8 al, bl, w0l;
+    REAL8 al, bl, w0lnospin, shift;
     switch(l) {
       case 2:
         al = 1./4.;
         bl = 3./4.;
-        w0l = tidal->omega02Tidal;
+        w0lnospin = tidal->omega02Tidal;
+        shift = tidal->omega02TidalShift;
         break;
       case 3:
         al = 3./8.;
         bl = 5./8.;
-        w0l = tidal->omega03Tidal;
+        w0lnospin = tidal->omega03Tidal;
+        shift = tidal->omega03TidalShift;
         break;
       default:
         XLALPrintError("XLAL Error - %s: mode number l must be 2 or 3!\n", __func__);
@@ -416,6 +418,9 @@ static REAL8 XLALSimIMRTEOBkleff (
     }
     /* NOTE: the function is valid only for m=l */
     INT4 m = l;
+    REAL8 w0l = w0lnospin + shift;
+    REAL8 shiftrel = shift / w0lnospin;
+    REAL8 lambdaenhance = 1. / (1. + shiftrel);
     REAL8 Omega = pow(u, 1.5);
     REAL8 x = w0l/(m*Omega);
     REAL8 x2 = x*x;
@@ -425,20 +430,22 @@ static REAL8 XLALSimIMRTEOBkleff (
     REAL8 argcossin = 3./8.*that*that;
     REAL8 argfresnel = 0.5*sqrt(3./LAL_PI)*that;
     /* Resonant term, first two terms in the bracket - use perturbative expansion near resonance */
-    REAL8 resonantterm;
-    if(fabs(x-1.)>1e-2) {
+    REAL8 poleshift = (m*Omega - shift) / w0lnospin;
+    REAL8 resonantterm = 1. / (1. - poleshift*poleshift) + lambdaenhance * x2 / ((2.*3./8.) * sqrtepsm * that);
+    /* TODO: handling of poles below */
+    /*if(fabs(x-1.)>1e-2) {
       resonantterm = f_keffresonant(x, x5_3);
     }
     else {
       resonantterm = f_keffresonant_pert(x);
-    }
+    }*/
     /* Fresnel term, third term featuring Qlm */
     REAL8 fres[2];
     fresnel_sc(argfresnel, fres);
     REAL8 fresnelS = fres[0];
     REAL8 fresnelC = fres[1];
-    REAL8 fresnelterm = sqrt(LAL_PI/3.)/sqrtepsm * x2*((1. + 2.*fresnelS)*cos(argcossin) - (1. + 2.*fresnelC)*sin(argcossin));
-    REAL8 klTidaleff = al + bl*(resonantterm + fresnelterm);
+    REAL8 fresnelterm = lambdaenhance * sqrt(LAL_PI/3.)/sqrtepsm * x2*((1. + 2.*fresnelS)*cos(argcossin) - (1. + 2.*fresnelC)*sin(argcossin));
+    REAL8 klTidaleff = al + bl*(1. - shiftrel*shiftrel)*(resonantterm + fresnelterm);
     return klTidaleff;
 }
 
@@ -451,6 +458,81 @@ static REAL8 XLALSimIMRTEOBkleff (
  * Expected numerical precision: |Deltaf'/f'| normal: 1e-8 | perturbative: 1e-10
  */
 static int XLALSimIMRTEOBkleff_and_kleff_u (
+                                  INT4 l, /**<< Mode number l - the function is valid only for l=2 or l=3 and for m=l */
+                                  REAL8 u, /**<< Inverse of radial separation in units of M */
+                                  REAL8 eta, /**<< Symmetric mass ratio */
+                                  TidalEOBParams * tidal, /**<< Tidal parameters */
+                                  REAL8 output[2] /**<< Output array */
+)
+{
+    /* Function only valid for l=2 or l=3 and for m=l */
+    REAL8 al, bl, w0lnospin, shift;
+    switch(l) {
+      case 2:
+        al = 1./4.;
+        bl = 3./4.;
+        w0lnospin = tidal->omega02Tidal;
+        shift = tidal->omega02TidalShift;
+        break;
+      case 3:
+        al = 3./8.;
+        bl = 5./8.;
+        w0lnospin = tidal->omega03Tidal;
+        shift = tidal->omega03TidalShift;
+        break;
+      default:
+        XLALPrintError("XLAL Error - %s: mode number l must be 2 or 3!\n", __func__);
+        XLAL_ERROR (XLAL_EINVAL);
+        break;
+    }
+    /* NOTE: the function is valid only for m=l */
+    INT4 m = l;
+    REAL8 w0l = w0lnospin + shift;
+    REAL8 shiftrel = shift / w0lnospin;
+    REAL8 lambdaenhance = 1. / (1. + shiftrel);
+    REAL8 Omega = pow(u, 1.5);
+    REAL8 Omega_u = 1.5*Omega/u;
+    REAL8 x = w0l/(m*Omega);
+    REAL8 x_u = -3./2./u*x;
+    REAL8 x2 = x*x;
+    REAL8 x5_3 = pow(x, 5./3.);
+    REAL8 sqrtepsm = sqrt(256./5.*eta*pow(w0l/m, 5./3.));
+    REAL8 that = 8./5./sqrtepsm * (1. - x5_3);
+    REAL8 that_u = -8./3./sqrtepsm * x5_3/x * x_u;
+    REAL8 argcossin = 3./8.*that*that;
+    REAL8 argcossin_u = 3./4.*that*that_u;
+    REAL8 argfresnel = 0.5*sqrt(3./LAL_PI)*that;
+    /* Resonant term, first two terms in the bracket - use perturbative expansion near resonance */
+    REAL8 poleshift = (m*Omega - shift) / w0lnospin;
+    REAL8 poleshift_u = m*Omega_u / w0lnospin;
+    REAL8 resonantterm = 1. / (1. - poleshift*poleshift) + lambdaenhance * x2 / ((2.*3./8.) * sqrtepsm * that);
+    REAL8 resonantterm_u = 2. * poleshift * poleshift_u / ((1. - poleshift*poleshift)*(1. - poleshift*poleshift)) + lambdaenhance * ( 2.*x*x_u * that - x2 * that_u) / ((2.*3./8.) * sqrtepsm * that * that);
+    /* TODO: handling of poles below */
+    /*REAL8 resonantterm, resonantterm_u;
+    if(fabs(x-1.)>1e-2) {
+      resonantterm = f_keffresonant(x, x5_3);
+      resonantterm_u = x_u * df_keffresonant(x, x5_3);
+    }
+    else {
+      resonantterm = f_keffresonant_pert(x);
+      resonantterm_u = x_u * df_keffresonant_pert(x);
+    }*/
+    /* Fresnel term, third term featuring Qlm */
+    REAL8 fres[2];
+    fresnel_sc(argfresnel, fres);
+    REAL8 fresnelS = fres[0];
+    REAL8 fresnelC = fres[1];
+    REAL8 fresnelterm = lambdaenhance * sqrt(LAL_PI/3.)/sqrtepsm * x2*((1. + 2.*fresnelS)*cos(argcossin) - (1. + 2.*fresnelC)*sin(argcossin));
+    REAL8 fresnelterm_u = lambdaenhance * sqrt(LAL_PI/3.)/sqrtepsm * (2.*x*x_u*((1. + 2.*fresnelS)*cos(argcossin) - (1. + 2.*fresnelC)*sin(argcossin)) - x2*argcossin_u*((1. + 2.*fresnelS)*sin(argcossin) + (1. + 2.*fresnelC)*cos(argcossin)));
+    REAL8 klTidaleff = al + bl*(1. - shiftrel*shiftrel)*(resonantterm + fresnelterm);
+    REAL8 klTidaleff_u = bl*(1. - shiftrel*shiftrel)*(resonantterm_u + fresnelterm_u);
+    output[0] = klTidaleff;
+    output[1] = klTidaleff_u;
+
+    return XLAL_SUCCESS;
+}
+
+static int XLALSimIMRTEOBkleff_and_kleff_u_orig (
                                   INT4 l, /**<< Mode number l - the function is valid only for l=2 or l=3 and for m=l */
                                   REAL8 u, /**<< Inverse of radial separation in units of M */
                                   REAL8 eta, /**<< Symmetric mass ratio */

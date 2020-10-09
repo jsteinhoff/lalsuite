@@ -77,6 +77,10 @@ DEFINE_INSERT_FUNC(TidalQuadrupolarFMode1, REAL8, "TidalQuadrupolarFMode1", 0)
 DEFINE_INSERT_FUNC(TidalQuadrupolarFMode2, REAL8, "TidalQuadrupolarFMode2", 0)
 DEFINE_INSERT_FUNC(TidalOctupolarFMode1, REAL8, "TidalOctupolarFMode1", 0)
 DEFINE_INSERT_FUNC(TidalOctupolarFMode2, REAL8, "TidalOctupolarFMode2", 0)
+DEFINE_INSERT_FUNC(TidalQuadrupolarFModeShift1, REAL8, "TidalQuadrupolarFModeShift1", 0)
+DEFINE_INSERT_FUNC(TidalQuadrupolarFModeShift2, REAL8, "TidalQuadrupolarFModeShift2", 0)
+DEFINE_INSERT_FUNC(TidalOctupolarFModeShift1, REAL8, "TidalOctupolarFModeShift1", 0)
+DEFINE_INSERT_FUNC(TidalOctupolarFModeShift2, REAL8, "TidalOctupolarFModeShift2", 0)
 /* Note: some approximants like SEOBNRv2T/SEOBNRv4T will by default compute dQuadMon1, dQuadMon2 */
 /* from TidalLambda1, TidalLambda2 using universal relations, rather than using the default value 0 */
 DEFINE_INSERT_FUNC(dQuadMon1, REAL8, "dQuadMon1", 0)
@@ -204,6 +208,10 @@ DEFINE_LOOKUP_FUNC(TidalQuadrupolarFMode1, REAL8, "TidalQuadrupolarFMode1", 0)
 DEFINE_LOOKUP_FUNC(TidalQuadrupolarFMode2, REAL8, "TidalQuadrupolarFMode2", 0)
 DEFINE_LOOKUP_FUNC(TidalOctupolarFMode1, REAL8, "TidalOctupolarFMode1", 0)
 DEFINE_LOOKUP_FUNC(TidalOctupolarFMode2, REAL8, "TidalOctupolarFMode2", 0)
+DEFINE_LOOKUP_FUNC(TidalQuadrupolarFModeShift1, REAL8, "TidalQuadrupolarFModeShift1", 0)
+DEFINE_LOOKUP_FUNC(TidalQuadrupolarFModeShift2, REAL8, "TidalQuadrupolarFModeShift2", 0)
+DEFINE_LOOKUP_FUNC(TidalOctupolarFModeShift1, REAL8, "TidalOctupolarFModeShift1", 0)
+DEFINE_LOOKUP_FUNC(TidalOctupolarFModeShift2, REAL8, "TidalOctupolarFModeShift2", 0)
 /* Note: some approximants like SEOBNRv2T/SEOBNRv4T will by default compute dQuadMon1, dQuadMon2 */
 /* from TidalLambda1, TidalLambda2 using universal relations, rather than using the default value 0 */
 DEFINE_LOOKUP_FUNC(dQuadMon1, REAL8, "dQuadMon1", 0)
@@ -323,6 +331,10 @@ DEFINE_ISDEFAULT_FUNC(TidalQuadrupolarFMode1, REAL8, "TidalQuadrupolarFMode1", 0
 DEFINE_ISDEFAULT_FUNC(TidalQuadrupolarFMode2, REAL8, "TidalQuadrupolarFMode2", 0)
 DEFINE_ISDEFAULT_FUNC(TidalOctupolarFMode1, REAL8, "TidalOctupolarFMode1", 0)
 DEFINE_ISDEFAULT_FUNC(TidalOctupolarFMode2, REAL8, "TidalOctupolarFMode2", 0)
+DEFINE_ISDEFAULT_FUNC(TidalQuadrupolarFModeShift1, REAL8, "TidalQuadrupolarFModeShift1", 0)
+DEFINE_ISDEFAULT_FUNC(TidalQuadrupolarFModeShift2, REAL8, "TidalQuadrupolarFModeShift2", 0)
+DEFINE_ISDEFAULT_FUNC(TidalOctupolarFModeShift1, REAL8, "TidalOctupolarFModeShift1", 0)
+DEFINE_ISDEFAULT_FUNC(TidalOctupolarFModeShift2, REAL8, "TidalOctupolarFModeShift2", 0)
 /* Note: some approximants like SEOBNRv2T/SEOBNRv4T will by default compute dQuadMon1, dQuadMon2 */
 /* from TidalLambda1, TidalLambda2 using universal relations, rather than using the default value 0 */
 DEFINE_ISDEFAULT_FUNC(dQuadMon1, REAL8, "dQuadMon1", 0)

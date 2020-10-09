@@ -32,6 +32,10 @@ int XLALSimInspiralWaveformParamsInsertTidalQuadrupolarFMode1(LALDict *params, R
 int XLALSimInspiralWaveformParamsInsertTidalQuadrupolarFMode2(LALDict *params, REAL8 value);
 int XLALSimInspiralWaveformParamsInsertTidalOctupolarFMode1(LALDict *params, REAL8 value);
 int XLALSimInspiralWaveformParamsInsertTidalOctupolarFMode2(LALDict *params, REAL8 value);
+int XLALSimInspiralWaveformParamsInsertTidalQuadrupolarFModeShift1(LALDict *params, REAL8 value);
+int XLALSimInspiralWaveformParamsInsertTidalQuadrupolarFModeShift2(LALDict *params, REAL8 value);
+int XLALSimInspiralWaveformParamsInsertTidalOctupolarFModeShift1(LALDict *params, REAL8 value);
+int XLALSimInspiralWaveformParamsInsertTidalOctupolarFModeShift2(LALDict *params, REAL8 value);
 int XLALSimInspiralWaveformParamsInsertLscorr(LALDict *params, INT4 value);
 int XLALSimInspiralWaveformParamsInsertdQuadMon1(LALDict *params, REAL8 value);
 int XLALSimInspiralWaveformParamsInsertdQuadMon2(LALDict *params, REAL8 value);
@@ -145,6 +149,10 @@ REAL8 XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFMode1(LALDict *params)
 REAL8 XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFMode2(LALDict *params);;
 REAL8 XLALSimInspiralWaveformParamsLookupTidalOctupolarFMode1(LALDict *params);
 REAL8 XLALSimInspiralWaveformParamsLookupTidalOctupolarFMode2(LALDict *params);
+REAL8 XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFModeShift1(LALDict *params);
+REAL8 XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFModeShift2(LALDict *params);;
+REAL8 XLALSimInspiralWaveformParamsLookupTidalOctupolarFModeShift1(LALDict *params);
+REAL8 XLALSimInspiralWaveformParamsLookupTidalOctupolarFModeShift2(LALDict *params);
 REAL8 XLALSimInspiralWaveformParamsLookupdQuadMon1(LALDict *params);
 REAL8 XLALSimInspiralWaveformParamsLookupdQuadMon2(LALDict *params);
 REAL8 XLALSimInspiralWaveformParamsLookupRedshift(LALDict *params);
@@ -258,6 +266,10 @@ int XLALSimInspiralWaveformParamsTidalQuadrupolarFMode1IsDefault(LALDict *params
 int XLALSimInspiralWaveformParamsTidalQuadrupolarFMode2IsDefault(LALDict *params);
 int XLALSimInspiralWaveformParamsTidalOctupolarFMode1IsDefault(LALDict *params);
 int XLALSimInspiralWaveformParamsTidalOctupolarFMode2IsDefault(LALDict *params);
+int XLALSimInspiralWaveformParamsTidalQuadrupolarFModeShift1IsDefault(LALDict *params);
+int XLALSimInspiralWaveformParamsTidalQuadrupolarFModeShift2IsDefault(LALDict *params);
+int XLALSimInspiralWaveformParamsTidalOctupolarFModeShift1IsDefault(LALDict *params);
+int XLALSimInspiralWaveformParamsTidalOctupolarFModeShift2IsDefault(LALDict *params);
 int XLALSimInspiralWaveformParamsdQuadMon1IsDefault(LALDict *params);
 int XLALSimInspiralWaveformParamsdQuadMon2IsDefault(LALDict *params);
 int XLALSimInspiralWaveformParamsRedshiftIsDefault(LALDict *params);

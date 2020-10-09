@@ -536,12 +536,16 @@ XLALSimIMRSpinAlignedEOBWaveform (REAL8TimeSeries ** hplus,	     /**<< OUTPUT, +
 
   REAL8 lambda2Tidal1 = 0;
   REAL8 omega02Tidal1 = 0;
+  REAL8 omega02TidalShift1 = 0;
   REAL8 lambda3Tidal1 = 0;
   REAL8 omega03Tidal1 = 0;
+  REAL8 omega03TidalShift1 = 0;
   REAL8 lambda2Tidal2 = 0;
   REAL8 omega02Tidal2 = 0;
+  REAL8 omega02TidalShift2 = 0;
   REAL8 lambda3Tidal2 = 0;
   REAL8 omega03Tidal2 = 0;
+  REAL8 omega03TidalShift2 = 0;
   REAL8 quadparam1 = 0;
   REAL8 quadparam2 = 0;
 
@@ -553,12 +557,14 @@ XLALSimIMRSpinAlignedEOBWaveform (REAL8TimeSeries ** hplus,	     /**<< OUTPUT, +
           XLALPrintError ("XLAL Error - %s: Tidal parameters are not set correctly! Always provide non-zero f-mode frequency when lambda2 is non-zero!\n", __func__);
           XLAL_ERROR (XLAL_EDOM);
       }
+      omega02TidalShift1 = XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFModeShift1(LALParams);
       lambda3Tidal1 = XLALSimInspiralWaveformParamsLookupTidalOctupolarLambda1(LALParams);
       omega03Tidal1 = XLALSimInspiralWaveformParamsLookupTidalOctupolarFMode1(LALParams);
       if ( lambda3Tidal1 != 0. && omega03Tidal1 == 0. ) {
           XLALPrintError ("XLAL Error - %s: Tidal parameters are not set correctly! Always provide non-zero octupolar f-mode frequency when lambda3 is non-zero!\n", __func__);
           XLAL_ERROR (XLAL_EDOM);
       }
+      omega03TidalShift1 = XLALSimInspiralWaveformParamsLookupTidalOctupolarFModeShift1(LALParams);
   }
   if ( (SpinAlignedEOBversion == 201 || SpinAlignedEOBversion == 401) && lambda2Tidal2 != 0. ) {
       omega02Tidal2 = XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFMode2(LALParams);
@@ -566,12 +572,14 @@ XLALSimIMRSpinAlignedEOBWaveform (REAL8TimeSeries ** hplus,	     /**<< OUTPUT, +
           XLALPrintError ("XLAL Error - %s: Tidal parameters are not set correctly! Always provide non-zero  f-mode frequency when lambda2 is non-zero!\n", __func__);
           XLAL_ERROR (XLAL_EDOM);
       }
+      omega02TidalShift2 = XLALSimInspiralWaveformParamsLookupTidalQuadrupolarFModeShift2(LALParams);
       lambda3Tidal2 = XLALSimInspiralWaveformParamsLookupTidalOctupolarLambda2(LALParams);
       omega03Tidal2 = XLALSimInspiralWaveformParamsLookupTidalOctupolarFMode2(LALParams);
       if ( lambda3Tidal2 != 0. && omega03Tidal2 == 0. ) {
           XLALPrintError ("XLAL Error - %s: Tidal parameters are not set correctly! Always provide non-zero octupolar f-mode frequency when lambda3 is non-zero!\n", __func__);
           XLAL_ERROR (XLAL_EDOM);
       }
+      omega03TidalShift2 = XLALSimInspiralWaveformParamsLookupTidalOctupolarFModeShift2(LALParams);
     }
   quadparam1 = 1. + XLALSimInspiralWaveformParamsLookupdQuadMon1(LALParams);
   quadparam2 = 1. + XLALSimInspiralWaveformParamsLookupdQuadMon2(LALParams);
@@ -607,7 +615,7 @@ XLALSimIMRSpinAlignedEOBWaveform (REAL8TimeSeries ** hplus,	     /**<< OUTPUT, +
       printf("First run SEOBNRv4 to compute NQCs\n");
 #endif
       ret = XLALSimIMRSpinAlignedEOBWaveformAll (hplus, hcross, phiC, 1./32768, m1BH, m2BH, 2*pow(10.,-1.5)/(2.*LAL_PI)/((m1BH + m2BH)*LAL_MTSUN_SI/LAL_MSUN_SI), r, inc, spin1z, spin2z, 400,
-					 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nqcCoeffsInput, nqcFlag, ModeArray);
+					 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, nqcCoeffsInput, nqcFlag, ModeArray);
       if (ret == XLAL_FAILURE){
         if ( nqcCoeffsInput ) XLALDestroyREAL8Vector( nqcCoeffsInput );
         if(ModeArray) XLALDestroyValue(ModeArray);
@@ -625,8 +633,10 @@ XLALSimIMRSpinAlignedEOBWaveform (REAL8TimeSeries ** hplus,	     /**<< OUTPUT, +
                                                  phiC, deltaT, m1SI, m2SI, fMin, r, inc, spin1z, spin2z, SpinAlignedEOBversion,
                                                  lambda2Tidal1, lambda2Tidal2,
                                                  omega02Tidal1, omega02Tidal2,
+                                                 omega02TidalShift1, omega02TidalShift2,
                                                  lambda3Tidal1, lambda3Tidal2,
                                                  omega03Tidal1, omega03Tidal2,
+                                                 omega03TidalShift1, omega03TidalShift2,
                                                  quadparam1, quadparam2,
                                                  nqcCoeffsInput, nqcFlag, ModeArray);
      if (ret == XLAL_FAILURE){
@@ -700,6 +710,10 @@ XLALSimIMRSpinAlignedEOBModes (SphHarmTimeSeries ** hlmmode,
                      /**<< quadrupole f-mode angular freq for body 1 m_1*omega_{02,1}*/
 				     const REAL8 omega02Tidal2,
                       /**<< quadrupole f-mode angular freq for body 2 m_2*omega_{02,2}*/
+				     const REAL8 omega02TidalShift1,
+                     /**<< TODO */
+				     const REAL8 omega02TidalShift2,
+                     /**<< TODO */
 				     const REAL8 lambda3Tidal1,
                      /**<< dimensionless adiabatic octupole tidal deformability for body 1 (2/15 k3/C^7) */
 				     const REAL8 lambda3Tidal2,
@@ -708,6 +722,10 @@ XLALSimIMRSpinAlignedEOBModes (SphHarmTimeSeries ** hlmmode,
                      /**<< octupole f-mode angular freq for body 1 m_1*omega_{03,1}*/
 				     const REAL8 omega03Tidal2,
                      /**<< octupole f-mode angular freq for body 2 m_2*omega_{03,2}*/
+				     const REAL8 omega03TidalShift1,
+                     /**<< TODO */
+				     const REAL8 omega03TidalShift2,
+                     /**<< TODO */
              const REAL8 quadparam1,
                      /**<< parameter kappa_1 of the spin-induced quadrupole for body 1, quadrupole is Q_A = -kappa_A m_A^3 chi_A^2 */
 				     const REAL8 quadparam2,
@@ -1131,16 +1149,32 @@ XLALSimIMRSpinAlignedEOBModes (SphHarmTimeSeries ** hlmmode,
   tidal1.mByM = m1SI / (m1SI + m2SI);
   tidal1.lambda2Tidal = lambda2Tidal1 * pow(tidal1.mByM,5);
   tidal1.omega02Tidal = omega02Tidal1 / tidal1.mByM;
+  tidal1.omega02TidalShift = omega02TidalShift1 / tidal1.mByM;
   tidal1.lambda3Tidal = lambda3Tidal1 * pow(tidal1.mByM,7);
   tidal1.omega03Tidal = omega03Tidal1 / tidal1.mByM;
+  tidal1.omega03TidalShift = omega03TidalShift1 / tidal1.mByM;
   tidal1.quadparam = quadparam1;
-
+  
   tidal2.mByM = m2SI / (m1SI + m2SI);
   tidal2.lambda2Tidal = lambda2Tidal2 * pow(tidal2.mByM,5);
   tidal2.omega02Tidal = omega02Tidal2 / tidal2.mByM;
+  tidal2.omega02TidalShift = omega02TidalShift2 / tidal2.mByM;
   tidal2.lambda3Tidal = lambda3Tidal2 * pow(tidal2.mByM,7);
   tidal2.omega03Tidal = omega03Tidal2 / tidal2.mByM;
+  tidal2.omega03TidalShift = omega03TidalShift2 / tidal2.mByM;
   tidal2.quadparam = quadparam2;
+
+  //printf("output keff:\n");
+  /*REAL8 tideout[2];
+  REAL8 un;
+  if (omega02Tidal2 != 0.) 
+    for (int ukeff = 10; ukeff<=1000; ukeff++) {
+      un = 10. / ukeff;
+      //printf("%.16e %.16e\n", un, XLALSimIMRTEOBkleff(2, un, 0.25, &tidal2));
+	  //printf("%.16e %.16e\n", un, XLALSimIMRTEOBkleff_orig(2, un, 0.25, &tidal2));
+	  XLALSimIMRTEOBkleff_and_kleff_u(3, un, 0.25, &tidal2, tideout);
+	  printf("%.16e %.16e\n", un, tideout[0]);
+    }*/
 
   seobCoeffs.tidal1 = &tidal1;
   seobCoeffs.tidal2 = &tidal2;
@@ -3170,6 +3204,10 @@ XLALSimIMRSpinAlignedEOBWaveformAll (REAL8TimeSeries ** hplus,
                      /**<< quadrupole f-mode angular freq for body 1 m_1*omega_{02,1}*/
 				     const REAL8 omega02Tidal2,
                       /**<< quadrupole f-mode angular freq for body 2 m_2*omega_{02,2}*/
+				     const REAL8 omega02TidalShift1,
+                     /**<< TODO */
+				     const REAL8 omega02TidalShift2,
+                      /**<< TODO */
 				     const REAL8 lambda3Tidal1,
                      /**<< dimensionless adiabatic octupole tidal deformability for body 1 (2/15 k3/C^7) */
 				     const REAL8 lambda3Tidal2,
@@ -3178,6 +3216,10 @@ XLALSimIMRSpinAlignedEOBWaveformAll (REAL8TimeSeries ** hplus,
                      /**<< octupole f-mode angular freq for body 1 m_1*omega_{03,1}*/
 				     const REAL8 omega03Tidal2,
                      /**<< octupole f-mode angular freq for body 2 m_2*omega_{03,2}*/
+				     const REAL8 omega03TidalShift1,
+                     /**<< TODO */
+				     const REAL8 omega03TidalShift2,
+                     /**<< TODO */
              const REAL8 quadparam1,
                      /**<< parameter kappa_1 of the spin-induced quadrupole for body 1, quadrupole is Q_A = -kappa_A m_A^3 chi_A^2 */
 				     const REAL8 quadparam2,
@@ -3208,8 +3250,10 @@ XLALSimIMRSpinAlignedEOBWaveformAll (REAL8TimeSeries ** hplus,
                                    deltaT, m1SI, m2SI, fMin, r, spin1z, spin2z, SpinAlignedEOBversion,
                                                lambda2Tidal1, lambda2Tidal2,
                                                omega02Tidal1, omega02Tidal2,
+                                               omega02TidalShift1, omega02TidalShift2,
                                                lambda3Tidal1, lambda3Tidal2,
                                                omega03Tidal1, omega03Tidal2,
+                                               omega03TidalShift1, omega03TidalShift2,
                                                quadparam1, quadparam2,
                                                nqcCoeffsInput, nqcFlag) == XLAL_FAILURE){
                                                  if(dynamics) XLALDestroyREAL8Vector(dynamics);

@@ -53,6 +53,7 @@ extern "C"
  * mByM - dimensionless ratio m_{NS}/M
  * lambda2Tidal - dimensionless adiabatic quadrupole tidal deformability normalized by total mass (2/3 k_2 (R_{NS}/M)^5)
  * omega02Tidal - quadrupole f-mode angular freq m_{NS}*omega_{02}
+ * TODO: document spinshift variables: n_{NS}*\Delta\omega_...
  * lambda3Tidal - dimensionless adiabatic octupole tidal deformability normalized by total mass (2/15 k_3 (R_{NS}/M)^7)
  * omega03Tidal - octupole f-mode angular freq m_{NS}*omega_{03}
  */
@@ -63,6 +64,8 @@ typedef struct tagTidalEOBParams
     REAL8 lambda3Tidal;
     REAL8 omega02Tidal;
     REAL8 omega03Tidal;
+    REAL8 omega02TidalShift;
+    REAL8 omega03TidalShift;
     REAL8 quadparam;
 }
 TidalEOBParams;
