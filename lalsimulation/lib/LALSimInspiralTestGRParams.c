@@ -240,7 +240,9 @@ int XLALSimInspiralWaveformParamsNonGRAreDefault(LALDict *params)
 	  && XLALSimInspiralWaveformParamsNonGRAlphaPPE4IsDefault(params)
 	  && XLALSimInspiralWaveformParamsNonGRAlphaPPE5IsDefault(params)
 	  && XLALSimInspiralWaveformParamsNonGRAlphaPPE6IsDefault(params)
-	  && XLALSimInspiralWaveformParamsNonGRAlphaPPE7IsDefault(params));
+	  && XLALSimInspiralWaveformParamsNonGRAlphaPPE7IsDefault(params))
+	  && XLALSimInspiralWaveformParamsNonGRDChikappaSIsDefault(params)
+	  && XLALSimInspiralWaveformParamsNonGRDChikappaAIsDefault(params);
 }
 
 /** @} */
